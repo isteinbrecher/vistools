@@ -14,7 +14,7 @@ dependencies = [
     "vtk"
 ]
 readme = "README.md"
-version = "0.2.0"
+version = "0.3.0"
 
 [project.urls]
 Repository = "https://github.com/isteinbrecher/vistools/"
