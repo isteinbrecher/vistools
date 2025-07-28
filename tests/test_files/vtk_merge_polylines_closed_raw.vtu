@@ -76,10 +76,30 @@
           </InformationKey>
         </DataArray>
       </PointData>
-      <CellData>
+      <CellData Scalars="cell_data_scalar">
         <DataArray type="Float64" Name="cross_section_radius" format="ascii" RangeMin="0.1" RangeMax="0.1">
           0.1 0.1 0.1 0.1 0.1 0.1
           0.1 0.1 0.1 0.1 0.1 0.1
+        </DataArray>
+        <DataArray type="Int64" Name="cell_data_scalar" format="ascii" RangeMin="0" RangeMax="11">
+          0 1 2 3 4 5
+          6 7 8 9 10 11
+        </DataArray>
+        <DataArray type="Int64" Name="cell_data_vector" NumberOfComponents="3" format="ascii" RangeMin="2.23606797749979" RangeMax="58.90670590009256">
+          0 1 2 3 4 5
+          6 7 8 9 10 11
+          12 13 14 15 16 17
+          18 19 20 21 22 23
+          24 25 26 27 28 29
+          30 31 32 33 34 35
+          <InformationKey name="L2_NORM_RANGE" location="vtkDataArray" length="2">
+            <Value index="0">
+              2.2360679775
+            </Value>
+            <Value index="1">
+              58.9067059
+            </Value>
+          </InformationKey>
         </DataArray>
       </CellData>
       <Points>

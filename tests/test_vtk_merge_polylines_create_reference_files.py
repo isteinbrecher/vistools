@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Optional, Type
 
 import numpy as np
+import pyvista as pv
 
 try:
     from meshpy.core.material import MaterialBeam
@@ -57,13 +58,21 @@ def create_visualization_file(mesh: Mesh, name) -> None:
 
     mesh.write_vtk(name, target_dir, binary=False)
 
-    old_file = target_dir / f"{name}_beam.vtu"
-    new_file = target_dir / f"{name}.vtu"
+    filename_beam = target_dir / f"{name}_beam.vtu"
+    filename_new = target_dir / f"{name}.vtu"
 
-    if old_file.exists():
-        old_file.rename(new_file)
+    # We add cell data.
+    grid = pv.get_reader(filename_beam).read()
+    grid.cell_data["cell_data_scalar"] = np.arange(grid.number_of_cells)
+    grid.cell_data["cell_data_vector"] = np.arange(3 * grid.number_of_cells).reshape(
+        (grid.number_of_cells, 3)
+    )
+    grid.save(filename_beam, binary=False)
+
+    if filename_beam.exists():
+        filename_beam.rename(filename_new)
     else:
-        raise FileNotFoundError(f"File {old_file} does not exist.")
+        raise FileNotFoundError(f"File {filename_beam} does not exist.")
 
 
 def create_reference_file_merge_polyline() -> None:

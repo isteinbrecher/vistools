@@ -22,7 +22,7 @@
 """Merge lines or polylines with each other that represent a continuous
 curve."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 import numpy as np
@@ -93,7 +93,12 @@ class _MergedPolyline:
     """Structure to hold a single merged polyline."""
 
     connected_cell_points: List[_MergePoint]
-    last_cell_id: Optional[int] = None
+    merged_cell_ids: List[int] = field(default_factory=list)
+
+    @property
+    def last_cell_id(self):
+        """Return the ID of the last cell added to the merged polyline."""
+        return self.merged_cell_ids[-1]
 
     def check_closed(self, data: _MergePolylineData) -> None:
         """Check if first and last point are the same, either by node ID or by
@@ -297,7 +302,7 @@ def _add_next_cell(
         next_start_index = 0
 
     merge_polyline_data.old_cell_tracker[new_cell.cell_id] = None
-    merged_polyline.last_cell_id = new_cell.cell_id
+    merged_polyline.merged_cell_ids.append(new_cell.cell_id)
     return new_cell_point_ids[next_start_index].index_1
 
 
@@ -330,7 +335,7 @@ def _find_next_connected_polyline(
     end_id = merged_polyline.connected_cell_points[-1].index_1
 
     for start_index in [start_id, end_id]:
-        merged_polyline.last_cell_id = next_cell_id
+        merged_polyline.merged_cell_ids.append(next_cell_id)
         next_point_id: Optional[int] = start_index
         while next_point_id is not None:
             next_point_id = _add_next_cell(
@@ -469,23 +474,49 @@ def merge_polylines(
     merge_polyline_data = _MergePolylineData(
         list(range(n_cells)), partner_list, partner_grouped, smooth_angle
     )
-    new_cells_connectivity = []
+    merged_polylines = []
     while True:
         merged_polyline = _find_next_connected_polyline(grid, merge_polyline_data)
         if merged_polyline is None:
             break
         merged_polyline.check_closed(merge_polyline_data)
-        new_cells_connectivity.append(merged_polyline.connected_cell_points)
+        merged_polylines.append(merged_polyline)
 
     # Create the found poly line
     new_cells = []
-    for connectivity in new_cells_connectivity:
+    for merged_polyline in merged_polylines:
+        connectivity = merged_polyline.connected_cell_points
         new_cell = vtk.vtkPolyLine()
         new_cell.GetPointIds().SetNumberOfIds(len(connectivity))
         for i, merge_point in enumerate(connectivity):
             new_point_index = _insert_point_by_index(grid, output_grid, merge_point)
             new_cell.GetPointIds().SetId(i, new_point_index)
         new_cells.append(new_cell)
+
+    # Output the averaged cell data arrays
+    input_cell_data = grid.GetCellData()
+    output_cell_data = output_grid.GetCellData()
+
+    for i in range(input_cell_data.GetNumberOfArrays()):
+        array_in = input_cell_data.GetArray(i)
+        name = array_in.GetName()
+        n_components = array_in.GetNumberOfComponents()
+
+        array_out = vtk.vtkDoubleArray()
+        array_out.SetName(name)
+        array_out.SetNumberOfComponents(n_components)
+        array_out.SetNumberOfTuples(len(new_cells))
+
+        for i_cell, merged_polyline in enumerate(merged_polylines):
+            # Average components
+            values = [
+                array_in.GetTuple(cell_id)
+                for cell_id in merged_polyline.merged_cell_ids
+            ]
+            average = np.mean(values, axis=0)
+            array_out.SetTuple(i_cell, average)
+
+        output_cell_data.AddArray(array_out)
 
     # Add all new cells to the output data
     output_grid.Allocate(len(new_cells), 1)
