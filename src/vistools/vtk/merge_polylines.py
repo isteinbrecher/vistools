@@ -27,12 +27,9 @@ from typing import List, Optional
 
 import numpy as np
 import vtk
-from scipy.spatial import KDTree
+from beamme.geometric_search.find_close_points import point_partners_to_partner_indices
+from beamme.geometric_search.scipy import find_close_points_scipy
 
-from vistools.vtk.geometric_search import (
-    pairs_to_partner_list,
-    point_partners_to_partner_indices,
-)
 from vistools.vtk.vtk_data_structures_utils import vtk_id_to_list
 
 
@@ -464,9 +461,7 @@ def merge_polylines(
     point_coordinates = np.array(
         [grid.GetPoint(i) for i in range(grid.GetNumberOfPoints())]
     )
-    kd_tree = KDTree(point_coordinates)
-    pairs = kd_tree.query_pairs(r=tol, output_type="ndarray")
-    partner_list, n_partners = pairs_to_partner_list(pairs, len(point_coordinates))
+    partner_list, n_partners = find_close_points_scipy(point_coordinates, tol)
     partner_grouped = point_partners_to_partner_indices(partner_list, n_partners)
 
     # Start with the first cell and search all cells connected to that cell and so on.
