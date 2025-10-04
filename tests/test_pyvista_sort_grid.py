@@ -96,9 +96,10 @@ def test_pyvista_sort_grid_partial(
     """Test the sort grid function.
 
     This is done by comparing FEM grids that were generated with a
-    different number of processors. In this test we completely only
-    partially sort the grid, i.e., this tests how the original ordering
-    is preserved after a sort.
+    different number of processors. Since each element writes it's own
+    nodes, we will have to sort by the cell IDs and the node IDs. This
+    additionally tests that when sorting data where multiple entries
+    have the same value, the ordering within these entries is preserved.
     """
 
     mesh_serial, mesh_parallel = [
@@ -108,10 +109,8 @@ def test_pyvista_sort_grid_partial(
         for name in ["sort_serial", "sort_parallel"]
     ]
 
-    # Since each element writes it's own nodes, we first sort the nodes by the cell id
-    mesh_parallel = mesh_parallel.cell_data_to_point_data(pass_cell_data=True)
-
     # Sort the parallel grid w.r.t. to the cell id
+    mesh_parallel = mesh_parallel.cell_data_to_point_data(pass_cell_data=True)
     mesh_parallel_sorted = sort_grid(
         mesh_parallel,
         sort_cell_field=["element_gid"],
