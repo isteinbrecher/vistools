@@ -28,6 +28,9 @@ from vtk.util import numpy_support as vtk_numpy_support
 
 from vistools.vtk.utils import get_vtk_version
 
+# Comparison tolerances for values computed with single precision.
+COMPARE_TOL_SINGLE_PRECISION = {"rtol": 1e-6, "atol": 1e-6}
+
 
 def compare_grids(
     grid_1, grid_2, *, rtol=None, atol=None, output=False
@@ -92,9 +95,15 @@ def compare_grids(
             rtol=rtol,
             atol=atol,
         ):
+            max_diff = np.max(
+                np.abs(
+                    vtk_numpy_support.vtk_to_numpy(array_1)
+                    - vtk_numpy_support.vtk_to_numpy(array_2)
+                )
+            )
             return (
                 False,
-                f"{name}: Data values do not match",
+                f"{name}: Data values do not match, maximum difference is {max_diff}",
             )
 
         return True, f"{name}: Compares OK"

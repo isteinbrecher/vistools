@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         os-version: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.12", "3.13"]
+        python-version: ["3.10", "3.13"]
     runs-on: ${{ matrix.os-version }}
     steps:
       - uses: actions/checkout@v4
@@ -64,10 +64,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python3.12
+      - name: Set up Python3.13
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.13
       - name: Install vistools
         run: |
           python -m pip install --upgrade pip

@@ -173,3 +173,13 @@ def assert_results_equal() -> Callable:
             assert False, "Got unexpected return variable from 'compare_grids'"
 
     return _assert_results_equal
+
+
+@pytest.fixture(scope="session")
+def assert_results_equal_single_precision_tol() -> dict:
+    """Return comparison tolerances for values computed with single precision.
+
+    Returns:
+        dict: Dictionary with keys 'rtol' and 'atol'.
+    """
+    return {"rtol": 1e-6, "atol": 1e-6}
