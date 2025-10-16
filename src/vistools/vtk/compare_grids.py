@@ -92,9 +92,15 @@ def compare_grids(
             rtol=rtol,
             atol=atol,
         ):
+            max_diff = np.max(
+                np.abs(
+                    vtk_numpy_support.vtk_to_numpy(array_1)
+                    - vtk_numpy_support.vtk_to_numpy(array_2)
+                )
+            )
             return (
                 False,
-                f"{name}: Data values do not match",
+                f"{name}: Data values do not match, maximum difference is {max_diff}",
             )
 
         return True, f"{name}: Compares OK"
