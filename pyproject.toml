@@ -10,8 +10,8 @@ authors = [
 ]
 description = "Utility functionality for vtk and pyvista"
 dependencies = [
+    "beamme",
     "numpy",
-    "scipy",
     "vtk"
 ]
 readme = "README.md"
