@@ -88,7 +88,10 @@ def generate_nonlinear_subdivision(
     for i, (corner_flag, original_id) in enumerate(
         zip(corner_cell_flag, original_point_ids)
     ):
-        if corner_flag and original_id < 0:
+        # We need the threshold here, since a "valid" original_id can be smaller than 0
+        # since it is averaged between the nodes of the cell.
+        original_id_tolerance = 1e-5
+        if corner_flag and original_id < -(1 - original_id_tolerance):
             final_filter[i] = 0
         else:
             final_filter[i] = 1
