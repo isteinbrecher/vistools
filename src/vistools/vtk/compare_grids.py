@@ -24,12 +24,32 @@
 from typing import Tuple, Union
 
 import numpy as np
+import vtk
 from vtk.util import numpy_support as vtk_numpy_support
-
-from vistools.vtk.utils import get_vtk_version
 
 # Comparison tolerances for values computed with single precision.
 COMPARE_TOL_SINGLE_PRECISION = {"rtol": 1e-6, "atol": 1e-6}
+
+
+def vtk_array_to_info(array) -> dict:
+    """Convert a vtk array to a dictionary with relevant information for
+    comparison."""
+
+    if isinstance(array, vtk.vtkCellArray):
+        array = array.GetData()
+    elif isinstance(array, vtk.vtkPoints):
+        array = array.GetData()
+    elif isinstance(array, vtk.vtkDataArray):
+        pass
+    else:
+        raise ValueError(f"Unsupported array type {type(array)}")
+
+    return {
+        "size": array.GetNumberOfTuples(),
+        "components": array.GetNumberOfComponents(),
+        "data_type": array.GetDataType(),
+        "data": vtk_numpy_support.vtk_to_numpy(array),
+    }
 
 
 def compare_grids(
@@ -65,42 +85,50 @@ def compare_grids(
                 f"{name}: Array 1 is {type(array_1)}, array 2 is {type(array_2)}",
             )
 
-        n_1 = array_1.GetNumberOfTuples()
-        n_2 = array_2.GetNumberOfTuples()
+        array_1_info = vtk_array_to_info(array_1)
+        array_2_info = vtk_array_to_info(array_2)
+
+        n_1 = array_1_info["size"]
+        n_2 = array_2_info["size"]
         if not n_1 == n_2:
             return (
                 False,
                 f"{name}: Number of tuples does not match, got {n_1} and {n_2}",
             )
 
-        n_1 = array_1.GetNumberOfComponents()
-        n_2 = array_2.GetNumberOfComponents()
+        n_1 = array_1_info["components"]
+        n_2 = array_2_info["components"]
         if not n_1 == n_2:
             return (
                 False,
                 f"{name}: Number of components does not match, got {n_1} and {n_2}",
             )
 
-        t_1 = array_1.GetDataType()
-        t_2 = array_2.GetDataType()
-        if not t_1 == t_2:
+        # This list is used to specify certain types that are considered equivalent
+        # for the comparison, e.g., because they are used interchangeably in different
+        # versions of VTK or PyVista.
+        equivalent_types = [
+            {12, 16},  # Unsigned integer ant vtk_id_type
+        ]
+        t_1 = array_1_info["data_type"]
+        t_2 = array_2_info["data_type"]
+        if t_1 == t_2:
+            pass
+        elif {t_1, t_2} in equivalent_types:
+            pass
+        else:
             return (
                 False,
                 f"{name}: Data type does not match, got {t_1} and {t_2}",
             )
 
         if not np.allclose(
-            vtk_numpy_support.vtk_to_numpy(array_1),
-            vtk_numpy_support.vtk_to_numpy(array_2),
+            array_1_info["data"],
+            array_2_info["data"],
             rtol=rtol,
             atol=atol,
         ):
-            max_diff = np.max(
-                np.abs(
-                    vtk_numpy_support.vtk_to_numpy(array_1)
-                    - vtk_numpy_support.vtk_to_numpy(array_2)
-                )
-            )
+            max_diff = np.max(np.abs(array_1_info["data"] - array_2_info["data"]))
             return (
                 False,
                 f"{name}: Data values do not match, maximum difference is {max_diff}",
@@ -113,46 +141,53 @@ def compare_grids(
 
     # Compare the point coordinates
     compare_value, string = compare_arrays(
-        grid_1.GetPoints().GetData(),
-        grid_2.GetPoints().GetData(),
-        "point_coordinates",
+        grid_1.GetPoints(), grid_2.GetPoints(), "point_coordinates"
     )
     return_value = compare_value and return_value
     lines.append(string)
 
     # Compare the cells
     compare_value, string = compare_arrays(
-        grid_1.GetCellTypesArray(), grid_2.GetCellTypesArray(), "cell_types"
+        grid_1.GetCellTypes(), grid_2.GetCellTypes(), "cell_types"
     )
     return_value = compare_value and return_value
     lines.append(string)
 
+    grid_1_offsets = grid_1.GetCells().GetOffsetsArray()
+    grid_1_connectivity = grid_1.GetCells().GetConnectivityArray()
+    grid_2_offsets = grid_2.GetCells().GetOffsetsArray()
+    grid_2_connectivity = grid_2.GetCells().GetConnectivityArray()
     compare_value, string = compare_arrays(
-        grid_1.GetCells().GetData(), grid_2.GetCells().GetData(), "cell_connectivity"
+        grid_1_offsets, grid_2_offsets, "cell_offsets"
+    )
+    return_value = compare_value and return_value
+    lines.append(string)
+    compare_value, string = compare_arrays(
+        grid_1_connectivity, grid_2_connectivity, "cell_connectivity"
     )
     return_value = compare_value and return_value
     lines.append(string)
 
-    if get_vtk_version() < (9, 4, 0):
+    faces_1 = grid_1.GetPolyhedronFaces()
+    faces_2 = grid_2.GetPolyhedronFaces()
+    if (faces_1 is None) != (faces_2 is None):
+        return_value = False
+        lines.append("face_connectivity: Could not find both face data arrays")
+    elif faces_1 is not None and faces_2 is not None:
+        faces_1_offsets = faces_1.GetOffsetsArray()
+        faces_1_connectivity = faces_1.GetConnectivityArray()
+        faces_2_offsets = faces_2.GetOffsetsArray()
+        faces_2_connectivity = faces_2.GetConnectivityArray()
         compare_value, string = compare_arrays(
-            grid_1.GetFaces(),
-            grid_2.GetFaces(),
-            "face_connectivity",
+            faces_1_offsets, faces_2_offsets, "face_cell_offsets"
         )
-    else:
-        faces1 = grid_1.GetPolyhedronFaces()
-        faces2 = grid_2.GetPolyhedronFaces()
-        if (faces1 is None) != (faces2 is None):
-            return_value = False
-            lines.append("face_connectivity: Could not find both face data arrays")
-        elif faces1 is not None and faces2 is not None:
-            compare_value, string = compare_arrays(
-                faces1.GetData(),
-                faces2.GetData(),
-                "face_connectivity",
-            )
-    return_value = compare_value and return_value
-    lines.append(string)
+        return_value = compare_value and return_value
+        lines.append(string)
+        compare_value, string = compare_arrays(
+            faces_1_connectivity, faces_2_connectivity, "face_cell_connectivity"
+        )
+        return_value = compare_value and return_value
+        lines.append(string)
 
     def compare_data_fields(data_1, data_2, name):
         """Compare multiple data sets grouped together."""
