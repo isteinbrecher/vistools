@@ -19,7 +19,7 @@ readme = "README.md"
 dynamic = ["version"]
 
 [tool.setuptools_scm]
-version_file = "src/cubitpy/version.py"
+version_file = "src/vistools/version.py"
 version_scheme = "post-release"
 local_scheme = "no-local-version"
 
