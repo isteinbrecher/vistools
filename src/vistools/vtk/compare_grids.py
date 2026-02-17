@@ -108,7 +108,7 @@ def compare_grids(
         # for the comparison, e.g., because they are used interchangeably in different
         # versions of VTK or PyVista.
         equivalent_types = [
-            {12, 16},  # Unsigned integer ant vtk_id_type
+            {12, 16},  # Unsigned integer and vtk_id_type
         ]
         t_1 = array_1_info["data_type"]
         t_2 = array_2_info["data_type"]
