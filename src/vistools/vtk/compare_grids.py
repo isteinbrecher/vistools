@@ -117,7 +117,7 @@ def compare_grids(
         else:
             return (
                 False,
-                f"{name}: Data type does not match, got {t_1} and {t_2}",
+                f"{name}: Data types do not match, got {t_1} and {t_2}",
             )
 
         if not np.allclose(
