@@ -21,14 +21,12 @@
 # THE SOFTWARE.
 """Compare two grids to each other."""
 
-from typing import Tuple, Union
-
 import numpy as np
 import vtk
 from vtk.util import numpy_support as vtk_numpy_support
 
 
-def vtk_array_to_info(array) -> dict:
+def _vtk_array_to_info(array: vtk.vtkDataArray | vtk.vtkPoints) -> dict:
     """Convert a vtk array to a dictionary with relevant information for
     comparison."""
 
@@ -48,20 +46,25 @@ def vtk_array_to_info(array) -> dict:
 
 
 def compare_grids(
-    grid_1, grid_2, *, rtol=None, atol=None, output=False
-) -> Union[bool, Tuple[bool, list[str]]]:
+    grid_1,
+    grid_2,
+    *,
+    rtol: float | None = None,
+    atol: float | None = None,
+    output: bool = False,
+) -> bool | tuple[bool, list[str]]:
     """Compare two grids to each other.
 
-    Args
-    ----
-    grid_1, grid_2:
-        Input grids which are compared to each other
-    rtol: float
-        Relative tolerance for comparing floating point data
-    atol: float
-        Absolute tolerance for comparing floating point data
-    output: bool
-        If output of the results of the comparison should be given
+    Args:
+        grid_1, grid_2: Input grids which are compared to each other
+        rtol: Relative tolerance for comparing floating point data
+        atol: Absolute tolerance for comparing floating point data
+        output: If output of the results of the comparison should be given
+
+    Returns:
+        If output is False, only a boolean value indicating whether the grids are
+        equal is returned. If output is True, a tuple of the boolean value and a
+        list of strings with the results of the comparison is returned.
     """
 
     if rtol is None:
@@ -80,8 +83,8 @@ def compare_grids(
                 f"{name}: Array 1 is {type(array_1)}, array 2 is {type(array_2)}",
             )
 
-        array_1_info = vtk_array_to_info(array_1)
-        array_2_info = vtk_array_to_info(array_2)
+        array_1_info = _vtk_array_to_info(array_1)
+        array_2_info = _vtk_array_to_info(array_2)
 
         n_1 = array_1_info["size"]
         n_2 = array_2_info["size"]
