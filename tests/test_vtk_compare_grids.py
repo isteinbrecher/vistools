@@ -207,6 +207,9 @@ def test_vtk_compare_grids_cell_connectivity_mismatch():
     assert any("face_cell_connectivity: Data values do not match" in s for s in lines)
 
 
+s
+
+
 @pytest.mark.parametrize(
     "test_mode,expect_pass,info_string",
     [
