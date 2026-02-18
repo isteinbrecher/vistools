@@ -27,17 +27,12 @@ import numpy as np
 import vtk
 from vtk.util import numpy_support as vtk_numpy_support
 
-# Comparison tolerances for values computed with single precision.
-COMPARE_TOL_SINGLE_PRECISION = {"rtol": 1e-6, "atol": 1e-6}
-
 
 def vtk_array_to_info(array) -> dict:
     """Convert a vtk array to a dictionary with relevant information for
     comparison."""
 
-    if isinstance(array, vtk.vtkCellArray):
-        array = array.GetData()
-    elif isinstance(array, vtk.vtkPoints):
+    if isinstance(array, vtk.vtkPoints):
         array = array.GetData()
     elif isinstance(array, vtk.vtkDataArray):
         pass
