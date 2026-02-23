@@ -24,7 +24,7 @@
 import numpy as np
 import pyvista as pv
 
-from vistools.pyvista.camera import apply_camera_settings, capture_camera_settings
+from vistools.pyvista.camera import get_camera_settings, set_camera_settings
 
 MOCK_SETTINGS = {
     "window_size": (800, 600),
@@ -51,13 +51,13 @@ def setup_plotter():
     return plotter
 
 
-def test_apply_camera_settings_applies_correctly():
-    """Check that apply_camera_settings applies the correct settings."""
+def test_set_camera_settings_applies_correctly():
+    """Check that set_camera_settings applies the correct settings."""
 
     plotter = setup_plotter()
 
     # Apply the mock settings.
-    apply_camera_settings(plotter, MOCK_SETTINGS)
+    set_camera_settings(plotter, MOCK_SETTINGS)
 
     camera = plotter.camera
     assert check_all_close(plotter.window_size, MOCK_SETTINGS["window_size"])
@@ -71,17 +71,17 @@ def test_apply_camera_settings_applies_correctly():
     assert check_all_close(camera.GetViewAngle(), MOCK_SETTINGS["view_angle"])
 
 
-def test_capture_camera_settings_returns_expected_keys():
-    """Check that capture_camera_settings returns the correct dictionary."""
+def test_get_camera_settings_returns_expected_keys():
+    """Check that get_camera_settings returns the correct dictionary."""
 
     plotter = setup_plotter()
     plotter.show(auto_close=False)  # prepare the plotter but don't block
 
     # Set camera settings
-    apply_camera_settings(plotter, MOCK_SETTINGS)
+    set_camera_settings(plotter, MOCK_SETTINGS)
 
     # Emulate capturing camera settings without key interaction
-    settings = capture_camera_settings(plotter, print_settings=False)
+    settings = get_camera_settings(plotter, print_settings=False)
 
     assert len(settings) == len(MOCK_SETTINGS)
     for key in settings:

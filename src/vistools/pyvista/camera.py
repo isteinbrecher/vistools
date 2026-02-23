@@ -26,15 +26,15 @@ import json
 import pyvista as pv
 
 
-def capture_camera_settings(
+def get_camera_settings(
     plotter: pv.Plotter, *, zoom_factor: float = 1.1, print_settings: bool = True
 ) -> dict:
-    """Show a given plotter and capture the chosen camera and window settings.
+    """Show a given plotter and return the chosen camera and window settings.
 
     After closing the viewer, a dictionary of settings is returned.
 
     This function attaches interactive hotkeys to the PyVista viewer:
-    - "c": This will print the camera settings to che console.
+    - "c": This will print the camera settings to the console.
     - "m": This will increase the view zoom.
     - "n": This will decrease the view zoom.
 
@@ -63,13 +63,13 @@ def capture_camera_settings(
         """Capture current camera and window settings."""
         camera = plotter.camera
         return {
-            "window_size": plotter.window_size,
-            "camera_position": camera.GetPosition(),
             "camera_focal_point": camera.GetFocalPoint(),
+            "camera_position": camera.GetPosition(),
             "camera_view_up": camera.GetViewUp(),
             "parallel_projection": camera.GetParallelProjection(),
             "parallel_scale": camera.GetParallelScale(),
             "view_angle": camera.GetViewAngle(),
+            "window_size": plotter.window_size,
         }
 
     def print_camera_state():
@@ -99,21 +99,26 @@ def capture_camera_settings(
     return settings
 
 
-def apply_camera_settings(plotter: pv.Plotter, settings: dict):
-    """Apply previously captured camera and window settings to a plotter.
+def set_camera_settings(plotter: pv.Plotter, settings: dict):
+    """Set previously captured camera and window settings to a plotter.
 
     Args:
         plotter: The target PyVista plotter instance.
-        settings: A dictionary as returned by `capture_camera_settings()`.
+        settings: A dictionary as returned by `get_camera_settings()`.
     """
     camera = plotter.camera
-    camera.SetPosition(settings["camera_position"])
-    camera.SetFocalPoint(settings["camera_focal_point"])
-    camera.SetViewUp(settings["camera_view_up"])
-    camera.SetParallelProjection(settings["parallel_projection"])
-    camera.SetParallelScale(settings["parallel_scale"])
-    camera.SetViewAngle(settings["view_angle"])
-
+    if "camera_position" in settings:
+        camera.SetPosition(settings["camera_position"])
+    if "camera_focal_point" in settings:
+        camera.SetFocalPoint(settings["camera_focal_point"])
+    if "camera_view_up" in settings:
+        camera.SetViewUp(settings["camera_view_up"])
+    if "parallel_projection" in settings:
+        camera.SetParallelProjection(settings["parallel_projection"])
+    if "parallel_scale" in settings:
+        camera.SetParallelScale(settings["parallel_scale"])
+    if "view_angle" in settings:
+        camera.SetViewAngle(settings["view_angle"])
     if "window_size" in settings:
         plotter.window_size = settings["window_size"]
 
