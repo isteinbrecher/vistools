@@ -21,6 +21,8 @@
 # THE SOFTWARE.
 """Interpolate between time steps in pvd time step series."""
 
+from operator import attrgetter
+
 import numpy as np
 import pyvista as pv
 
@@ -66,13 +68,11 @@ def temporal_interpolator(
     end_mesh = get_mesh(end_index)
 
     output_mesh.points = factor[0] * output_mesh.points + factor[1] * end_mesh.points
-    for key in output_mesh.cell_data.keys():
-        output_mesh.cell_data[key] = (
-            factor[0] * output_mesh.cell_data[key] + factor[1] * end_mesh.cell_data[key]
-        )
-    for key in output_mesh.point_data.keys():
-        output_mesh.point_data[key] = (
-            factor[0] * output_mesh.point_data[key]
-            + factor[1] * end_mesh.point_data[key]
-        )
+    for data_type in ["point_data", "cell_data", "field_data"]:
+        getter = attrgetter(data_type)
+        for key in getter(output_mesh).keys():
+            getter(output_mesh)[key] = (
+                factor[0] * getter(output_mesh)[key] + factor[1] * getter(end_mesh)[key]
+            )
+
     return output_mesh
