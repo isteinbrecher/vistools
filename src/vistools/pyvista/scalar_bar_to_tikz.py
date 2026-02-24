@@ -24,14 +24,13 @@
 import os
 from pathlib import Path
 
-import cv2
 import pyvista as pv
 
 # Inch to centimeter conversion
 INCH = 2.54
 
 
-def _dots_to_inch(pt, dpi):
+def _dots_to_cm(pt, dpi):
     """Convert a distance in pt to cm."""
     return float(pt) / dpi * INCH
 
@@ -50,42 +49,20 @@ def _show_scalar_bar(scalar_bar, data):
     scalar_bar.DrawTickLabelsOn()
 
 
-def _get_scalar_bar_rectangles(scalar_bars, image_pixel_data, dpi):
+def _get_scalar_bar_rectangles(plotter, scalar_bars, dpi):
     """Get the position of the TikZ color bars.
 
     We return the distance in cm where the scalar bar starts and the width
     and the height:
-        [pos_x, pos_y, width, heighth]
-
-    For now we do this with image detection, but this could also be done by
-    directly interpreting the data from the scalar bar. There seems to be a
-    bug in pyvista such that the width of the scalar bar needs to be scaled
-    with 1/INCH.
+        [pos_x, pos_y, width, height]
     """
-
-    shape = image_pixel_data.shape
-
-    # Convert to grayscale
-    gray = cv2.cvtColor(image_pixel_data, cv2.COLOR_RGB2GRAY)
-
-    # Apply edge detection
-    edges = cv2.Canny(gray, threshold1=50, threshold2=150)
-
-    # Find external contours
-    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     rectangles = []
 
-    for contour in contours:
-        # Approximate contour to polygon
-        epsilon = 0.02 * cv2.arcLength(contour, True)
-        approx = cv2.approxPolyDP(contour, epsilon, True)
-
-        # Check for 4 corners and convexity
-        if len(approx) == 4 and cv2.isContourConvex(approx):
-            x, y, w, h = cv2.boundingRect(approx)
-            rectangle_pixel = [x, shape[0] - y - h + 1, w, h - 1]
-            rectangles.append([_dots_to_inch(val, dpi) for val in rectangle_pixel])
+    for scalar_bar in scalar_bars:
+        rectangle_pixel = [0, 0, 0, 0]
+        scalar_bar.GetScalarBarRect(rectangle_pixel, plotter.renderer)
+        rectangles.append([_dots_to_cm(val, dpi) for val in rectangle_pixel])
 
     return rectangles
 
@@ -142,7 +119,6 @@ def _get_tikz_string_continuous(rectangle, data, number_format):
             "ytick align=outside,",
         ]
     elif data["orientation"] == "h":
-        raise ValueError("For horizontal orientation the rectangles are wrong!")
         tikz_code += [
             "ytick=\\empty,",
             f"xtick={{{ticks_string}}},",
@@ -164,7 +140,7 @@ def export_to_tikz(
     dpi: int = 300,
     figure_path: str = "",
     number_format: str = "{$\\pgfmathprintnumber[sci,precision=1,sci generic={mantissa sep=,exponent={\\mathrm{e}{##1}}}]{\\tick}$}",
-    is_testing: bool = True,
+    is_testing: bool = False,
 ):
     """Export a screenshot and also export TikZ code that overlays a TikZ
     scalar bar.
@@ -197,9 +173,9 @@ def export_to_tikz(
 
     # Save the screenshot
     if not is_testing:
-        image_pixel_data = plotter.screenshot(image_path)
+        plotter.screenshot(image_path)
     else:
-        image_pixel_data = plotter.screenshot(None, return_img=True)
+        plotter.screenshot(None, return_img=True)
 
     # Reset the scalar bar properties
     for scalar_bar, data in zip(scalar_bars, original_data):
@@ -220,14 +196,10 @@ def export_to_tikz(
     ]
 
     # Get the positions of the scalar bar
-    rectangles = _get_scalar_bar_rectangles(scalar_bars, image_pixel_data, dpi)
+    rectangles = _get_scalar_bar_rectangles(plotter, scalar_bars, dpi)
 
     # Get the data we need for the TikZ plot from the scalar bar
     tikz_data_list = [_get_tikz_data(scalar_bar) for scalar_bar in scalar_bars]
-
-    # For now this only works for 1 rectangle
-    if not len(rectangles) == 1 or not len(tikz_data_list) == 1:
-        raise ValueError("This function currently only works for 1 rectangle")
 
     # Add the TikZ code for each color bar
     for rectangle, data in zip(rectangles, tikz_data_list):

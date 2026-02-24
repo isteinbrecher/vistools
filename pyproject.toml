@@ -29,10 +29,10 @@ Issues = "https://github.com/isteinbrecher/vistools/issues/"
 
 [project.optional-dependencies]
 pyvista = [
-  "pyvista",
-  "opencv-python"
+  "pyvista"
 ]
 dev = [
+  "fourcipp",
   "pre-commit",
   "pytest",
   "pytest-cov"
