@@ -3,7 +3,7 @@
   <UnstructuredGrid>
     <FieldData>
       <DataArray type="Float64" Name="TIME" NumberOfTuples="1" format="ascii" RangeMin="1" RangeMax="1">
-        1
+        2.0
       </DataArray>
     </FieldData>
     <Piece NumberOfPoints="210" NumberOfCells="10">
