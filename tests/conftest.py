@@ -22,12 +22,15 @@
 """Testing framework infrastructure."""
 
 import os
+import re
 from pathlib import Path
-from typing import Callable, Optional, Union
+from typing import Any, Callable, Optional, Union
 
+import numpy as np
 import pytest
 import pyvista as pv
 import vtk
+from fourcipp.utils.dict_utils import compare_nested_dicts_or_lists
 
 from vistools.vtk.compare_grids import compare_grids
 
@@ -183,3 +186,133 @@ def assert_results_equal_single_precision_tol() -> dict:
         dict: Dictionary with keys 'rtol' and 'atol'.
     """
     return {"rtol": 1e-6, "atol": 1e-6}
+
+
+def custom_fourcipp_comparison(
+    obj: Any, reference_obj: Any, rtol: float, atol: float
+) -> bool | None:
+    """Custom comparison function for the FourCIPP
+    compare_nested_dicts_or_lists function.
+
+    Comparison between two objects, either lists or numpy arrays.
+
+    This function is taken from BeamMe.
+
+    Args:
+        obj: The object to compare.
+        reference_obj: The reference object to compare against.
+        rtol: The relative tolerance to use for comparison.
+        atol: The absolute tolerance to use for comparison.
+
+    Returns:
+        True if the objects are equal, otherwise raises an AssertionError.
+        If no comparison took place, None is returned.
+    """
+
+    if isinstance(obj, (np.ndarray, np.generic)) or isinstance(
+        reference_obj, (np.ndarray, np.generic)
+    ):
+        if not np.allclose(obj, reference_obj, rtol=rtol, atol=atol):
+            raise AssertionError(
+                f"Custom comparison failed!\n\nThe objects are not equal:\n\nobj: {obj}\n\nreference_obj: {reference_obj}"
+            )
+        return True
+
+    return None
+
+
+@pytest.fixture(scope="function")
+def assert_results_close() -> Callable:
+    """Return function to compare dictionaries and or lists (also nested)."""
+
+    def _assert_results_close(
+        reference, result, rtol: float = 1e-10, atol: float = 1e-10
+    ) -> None:
+        """Comparison between reference and result with relative or absolute
+        tolerance.
+
+        If the comparison fails, an assertion is raised.
+
+        Args:
+            reference: The reference data.
+            result: The result data.
+            rtol: The relative tolerance.
+            atol: The absolute tolerance.
+        """
+
+        compare_nested_dicts_or_lists(
+            reference,
+            result,
+            rtol=rtol,
+            atol=atol,
+            allow_int_vs_float_comparison=True,
+            custom_compare=lambda obj, ref_obj: custom_fourcipp_comparison(
+                obj, ref_obj, rtol=rtol, atol=atol
+            ),
+        )
+
+    return _assert_results_close
+
+
+@pytest.fixture(scope="function")
+def assert_tex_close() -> Callable:
+    """Return a function that asserts that given LaTeX texts are the same, also
+    compare floating point values with a tolerance."""
+
+    regex_float = re.compile(
+        r"""
+        [-+]?(
+            (?:\d+\.\d*)|      # 1.23 or 1.
+            (?:\.\d+)|         # .123
+            (?:\d+\.\d*[eE][-+]?\d+)|  # 1.23e4
+            (?:\d+[eE][-+]?\d+)        # 1e4
+        )
+        """,
+        re.VERBOSE,
+    )
+
+    def split_tex_text(text: str) -> tuple[list[str], np.ndarray]:
+        """Split the given LaTeX text into text and floating points values."""
+
+        parts = []
+        floats = []
+
+        last = 0
+        for match in regex_float.finditer(text):
+            start, end = match.span()
+            parts.append(text[last:start])
+            floats.append(float(match.group()))
+            last = end
+
+        parts.append(text[last:])
+        return parts, np.array(floats)
+
+    def _assert_tex_close(reference, result, rtol: float = 1e-10, atol: float = 1e-10):
+        """Assert that the given LaTeX texts are the same, also compare
+        floating point values with a tolerance."""
+
+        text_ref, float_ref = split_tex_text(reference)
+        text_result, float_result = split_tex_text(result)
+
+        compare_nested_dicts_or_lists(
+            text_ref,
+            text_result,
+            rtol=rtol,
+            atol=atol,
+            allow_int_vs_float_comparison=True,
+            custom_compare=lambda obj, ref_obj: custom_fourcipp_comparison(
+                obj, ref_obj, rtol=rtol, atol=atol
+            ),
+        )
+        compare_nested_dicts_or_lists(
+            float_ref,
+            float_result,
+            rtol=rtol,
+            atol=atol,
+            allow_int_vs_float_comparison=True,
+            custom_compare=lambda obj, ref_obj: custom_fourcipp_comparison(
+                obj, ref_obj, rtol=rtol, atol=atol
+            ),
+        )
+
+    return _assert_tex_close

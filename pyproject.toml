@@ -32,6 +32,7 @@ pyvista = [
   "pyvista"
 ]
 dev = [
+  "fourcipp",
   "pre-commit",
   "pytest",
   "pytest-cov"

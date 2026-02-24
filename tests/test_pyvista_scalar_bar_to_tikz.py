@@ -19,23 +19,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-"""Test the functionality of temporal_interpolator."""
+"""PyVista scalar bar to TikZ export functionality."""
 
-import sys
-
-import pytest
 import pyvista as pv
 from pyvista import examples
 
 from vistools.pyvista.scalar_bar_to_tikz import export_to_tikz
 
 
-@pytest.mark.skipif(
-    sys.platform.startswith("win"),
-    reason="Fails due to numerical round of issues on Windows",
-)
-def test_pyvista_scalar_bar_to_tikz(get_corresponding_reference_file_path, tmp_path):
-    """Test the temporal_interpolator function."""
+def test_pyvista_scalar_bar_to_tikz(
+    get_corresponding_reference_file_path, tmp_path, assert_tex_close
+):
+    """Test the scalar bar to TikZ functionality."""
 
     # Load an example mesh with scalar data
     mesh = examples.load_random_hills()
@@ -48,13 +43,27 @@ def test_pyvista_scalar_bar_to_tikz(get_corresponding_reference_file_path, tmp_p
         mesh,
         scalars=None,
         scalar_bar_args=dict(
-            title="Title",
+            title="Title1",
             interactive=False,
             height=0.3,
             position_x=0.001,
             position_y=0.1,
             width=0.05,
             vertical=True,
+        ),
+    )
+
+    plotter.add_mesh(
+        mesh,
+        scalars=None,
+        scalar_bar_args=dict(
+            title="Title2",
+            interactive=False,
+            height=0.1,
+            position_x=0.3,
+            position_y=0.4,
+            width=0.4,
+            vertical=False,
         ),
     )
 
@@ -66,4 +75,4 @@ def test_pyvista_scalar_bar_to_tikz(get_corresponding_reference_file_path, tmp_p
         tikz_code = tikz_file.read().strip()
     with open(get_corresponding_reference_file_path(extension="tex"), "r") as tikz_file:
         tikz_code_ref = tikz_file.read().strip()
-    assert tikz_code == tikz_code_ref
+    assert_tex_close(tikz_code_ref, tikz_code)
