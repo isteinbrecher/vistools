@@ -59,7 +59,9 @@ def generate_nonlinear_subdivision(
     grid.point_data["edge_flag"] = edge_flag
 
     # Refine the surface with nonlinear subdivision
-    surface_refined = grid.extract_surface(nonlinear_subdivision=nonlinear_subdivision)
+    surface_refined = grid.extract_surface(
+        nonlinear_subdivision=nonlinear_subdivision, algorithm="dataset_surface"
+    )
     surface_refined.point_data["original_point_ids"] = surface_refined.point_data[
         "vtkOriginalPointIds"
     ].copy()
