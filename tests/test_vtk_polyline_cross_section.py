@@ -30,7 +30,7 @@ from vistools.vtk.polyline_cross_section import polyline_cross_section
 
 @pytest.mark.parametrize("closed", [True, False])
 def test_vtk_polyline_cross_section(
-    get_corresponding_reference_file_path, assert_results_equal, closed
+    get_corresponding_reference_file_path, assert_grids_close, closed
 ):
     """Test the polyline_cross_section function."""
 
@@ -49,7 +49,7 @@ def test_vtk_polyline_cross_section(
     )
 
     # Compare with reference result
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(
             additional_identifier=("closed" if closed else "open")
         ),

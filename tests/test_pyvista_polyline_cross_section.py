@@ -34,7 +34,7 @@ from vistools.vtk.merge_polylines import merge_polylines
 )
 def test_pyvista_polyline_cross_section(
     get_corresponding_reference_file_path,
-    assert_results_equal,
+    assert_grids_close,
     closed,
     separate_surfaces,
 ):
@@ -64,7 +64,7 @@ def test_pyvista_polyline_cross_section(
         "closed" if closed else "open",
         "separate" if separate_surfaces else "connected",
     )
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier=variant_name),
         helix_3d,
     )

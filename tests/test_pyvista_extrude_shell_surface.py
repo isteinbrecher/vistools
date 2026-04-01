@@ -28,8 +28,8 @@ from vistools.pyvista.extrude_shell_surface import extrude_shell_surface
 
 def test_pyvista_extrude_shell_surface(
     get_corresponding_reference_file_path,
-    assert_results_equal,
-    assert_results_equal_single_precision_tol,
+    assert_grids_close,
+    assert_grids_close_single_precision_tol,
 ):
     """Test the extrude_shell_surface function."""
 
@@ -43,8 +43,8 @@ def test_pyvista_extrude_shell_surface(
 
     # Since the normal field is computed using single precision, we need to use a
     # higher tolerance for the comparison.
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(),
         shell_3d,
-        **assert_results_equal_single_precision_tol,
+        **assert_grids_close_single_precision_tol,
     )

@@ -29,7 +29,7 @@ from vistools.pyvista.temporal_interpolator import temporal_interpolator
 
 
 def test_pyvista_temporal_interpolator(
-    get_corresponding_reference_file_path, assert_results_equal
+    get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the temporal_interpolator function."""
 
@@ -39,13 +39,13 @@ def test_pyvista_temporal_interpolator(
 
     # Check if we can extract at a given time value
     mesh_01 = temporal_interpolator(pvd_reader, 1.0)
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier="01"), mesh_01
     )
 
     # Check if we can interpolate between time steps
     mesh_interpolated = temporal_interpolator(pvd_reader, 2.0)
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier="interpolated"),
         mesh_interpolated,
     )

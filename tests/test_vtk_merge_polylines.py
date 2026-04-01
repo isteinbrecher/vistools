@@ -32,7 +32,7 @@ CLEAN_GRID_TOL = 1e-10
 
 @pytest.mark.parametrize("clean", [False, True])
 def test_vtk_merge_polylines(
-    clean, get_corresponding_reference_file_path, assert_results_equal
+    clean, get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the merge_polylines function."""
 
@@ -48,7 +48,7 @@ def test_vtk_merge_polylines(
 
     grid_merged = merge_polylines(grid)
 
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier=identifier),
         grid_merged,
     )
@@ -64,7 +64,7 @@ def test_vtk_merge_polylines_closed(
     smooth_angle_name,
     clean,
     get_corresponding_reference_file_path,
-    assert_results_equal,
+    assert_grids_close,
 ):
     """Test the merge_polylines function for a closed polygon."""
 
@@ -81,7 +81,7 @@ def test_vtk_merge_polylines_closed(
 
     grid_merged = merge_polylines(grid, smooth_angle=smooth_angle)
 
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(
             additional_identifier="_".join(identifier)
         ),
