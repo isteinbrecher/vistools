@@ -30,7 +30,7 @@ from vistools.pyvista.sort_grid import sort_grid
 
 
 def test_pyvista_sort_grid_complete(
-    get_corresponding_reference_file_path, assert_results_equal
+    get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the sort grid function.
 
@@ -87,11 +87,11 @@ def test_pyvista_sort_grid_complete(
     del mesh_parallel_sorted.cell_data["element_gid_10"]
 
     # Compare the two grids
-    assert_results_equal(mesh_parallel_sorted, mesh_serial_sorted)
+    assert_grids_close(mesh_parallel_sorted, mesh_serial_sorted)
 
 
 def test_pyvista_sort_grid_partial(
-    get_corresponding_reference_file_path, assert_results_equal
+    get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the sort grid function.
 
@@ -121,11 +121,11 @@ def test_pyvista_sort_grid_partial(
     del mesh_parallel_sorted.point_data["element_gid"]
 
     # Compare the two grids
-    assert_results_equal(mesh_parallel_sorted, mesh_serial)
+    assert_grids_close(mesh_parallel_sorted, mesh_serial)
 
 
 def test_pyvista_sort_grid_mixed_types(
-    get_corresponding_reference_file_path, assert_results_equal
+    get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test that the sort grid function can handle polyhedrons."""
 
@@ -142,7 +142,7 @@ def test_pyvista_sort_grid_mixed_types(
     mesh_mixed_cells_sorted = sort_grid(mesh_mixed_cells, sort_point_field=["sort_id"])
 
     # Compare with the reference grid
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(
             reference_file_base_name="mixed_cell_types_sorted"
         ),

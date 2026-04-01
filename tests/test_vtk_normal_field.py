@@ -33,8 +33,8 @@ def test_vtk_normal_field(
     nonlinear_subdivision_level,
     clean,
     get_corresponding_reference_file_path,
-    assert_results_equal,
-    assert_results_equal_single_precision_tol,
+    assert_grids_close,
+    assert_grids_close_single_precision_tol,
 ):
     """Test the add_normal_field function."""
     shell = pyvista.get_reader(
@@ -57,10 +57,10 @@ def test_vtk_normal_field(
 
     # Since the normal field is computed using single precision, we need to use a
     # higher tolerance for the comparison.
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(
             additional_identifier="_".join(name_list)
         ),
         shell,
-        **assert_results_equal_single_precision_tol,
+        **assert_grids_close_single_precision_tol,
     )

@@ -131,7 +131,7 @@ def get_corresponding_reference_file_path(
 
 
 @pytest.fixture(scope="function")
-def assert_results_equal() -> Callable:
+def assert_grids_close() -> Callable:
     """Return function to compare vtu grids.
 
     Necessary to enable the function call through pytest fixtures.
@@ -140,7 +140,7 @@ def assert_results_equal() -> Callable:
         Function to compare results.
     """
 
-    def _assert_results_equal(
+    def _assert_grids_close(
         reference: Union[Path, pv.UnstructuredGrid, vtk.vtkUnstructuredGrid],
         result: Union[Path, pv.UnstructuredGrid, vtk.vtkUnstructuredGrid],
         rtol: Optional[float] = 1e-10,
@@ -175,11 +175,11 @@ def assert_results_equal() -> Callable:
         else:
             assert False, "Got unexpected return variable from 'compare_grids'"
 
-    return _assert_results_equal
+    return _assert_grids_close
 
 
 @pytest.fixture(scope="session")
-def assert_results_equal_single_precision_tol() -> dict:
+def assert_grids_close_single_precision_tol() -> dict:
     """Return comparison tolerances for values computed with single precision.
 
     Returns:

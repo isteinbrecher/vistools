@@ -29,8 +29,8 @@ from vistools.pyvista.nonlinear_subdivision import generate_nonlinear_subdivisio
 
 def test_pyvista_generate_nonlinear_subdivision_hex27(
     get_corresponding_reference_file_path,
-    assert_results_equal,
-    assert_results_equal_single_precision_tol,
+    assert_grids_close,
+    assert_grids_close_single_precision_tol,
 ):
     """Test the generate_nonlinear_subdivision function."""
 
@@ -47,20 +47,20 @@ def test_pyvista_generate_nonlinear_subdivision_hex27(
 
     # Since the normal field is computed using single precision, we need to use a
     # higher tolerance for the comparison.
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier="surface"),
         pyvista.UnstructuredGrid(surface_refined),
-        **assert_results_equal_single_precision_tol,
+        **assert_grids_close_single_precision_tol,
     )
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier="edges"),
         pyvista.UnstructuredGrid(edges),
-        **assert_results_equal_single_precision_tol,
+        **assert_grids_close_single_precision_tol,
     )
 
 
 def test_pyvista_generate_nonlinear_subdivision_quad9(
-    get_corresponding_reference_file_path, assert_results_equal
+    get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the generate_nonlinear_subdivision function."""
 
@@ -74,11 +74,11 @@ def test_pyvista_generate_nonlinear_subdivision_quad9(
         shell, 3, delete_created_arrays=False
     )
 
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier="surface"),
         pyvista.UnstructuredGrid(surface_refined),
     )
-    assert_results_equal(
+    assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier="edges"),
         pyvista.UnstructuredGrid(edges),
     )
