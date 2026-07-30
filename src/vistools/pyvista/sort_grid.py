@@ -21,8 +21,6 @@
 # THE SOFTWARE.
 """Sort a vtk grid based on cell and/or point values."""
 
-from typing import List, Optional
-
 import numpy as np
 import pyvista as pv
 import vtk
@@ -101,7 +99,7 @@ def sort_grid(
     # Get the sorted cells with the sorted connectivity
     points_sorted = sort_data(grid.points, sorted_indices_points)
     cell_types_sorted = sort_data(cell_types, sorted_indices_cells)
-    cells_sorted_list: List[Optional[List[int]]] = [None] * grid.n_cells
+    cells_sorted_list: list[list[int] | None] = [None] * grid.n_cells
     index = 0
     i_cell = 0
     while index < len(cells):
