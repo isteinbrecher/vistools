@@ -23,8 +23,9 @@
 
 import os
 import re
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any
 
 import numpy as np
 import pytest
@@ -89,8 +90,8 @@ def get_corresponding_reference_file_path(
     """
 
     def _get_corresponding_reference_file_path(
-        reference_file_base_name: Optional[str] = None,
-        additional_identifier: Optional[str] = None,
+        reference_file_base_name: str | None = None,
+        additional_identifier: str | None = None,
         extension: str = "vtu",
     ) -> Path:
         """Get path to corresponding reference file for each test. Also check
@@ -141,10 +142,10 @@ def assert_grids_close() -> Callable:
     """
 
     def _assert_grids_close(
-        reference: Union[Path, pv.UnstructuredGrid, vtk.vtkUnstructuredGrid],
-        result: Union[Path, pv.UnstructuredGrid, vtk.vtkUnstructuredGrid],
-        rtol: Optional[float] = 1e-10,
-        atol: Optional[float] = 1e-10,
+        reference: vtk.vtkUnstructuredGrid | pv.UnstructuredGrid | Path,
+        result: vtk.vtkUnstructuredGrid | pv.UnstructuredGrid | Path,
+        rtol: float | None = 1e-10,
+        atol: float | None = 1e-10,
     ) -> None:
         """Comparison between reference and result with relative or absolute
         tolerance.

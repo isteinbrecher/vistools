@@ -21,8 +21,6 @@
 # THE SOFTWARE.
 """Extrude a profile along a polyline."""
 
-from typing import List
-
 import numpy as np
 import vtk
 from numpy.typing import NDArray
@@ -60,7 +58,7 @@ def polyline_cross_section(
 
     # Data arrays
     point_data_input = grid.GetPointData()
-    base_vector_data: List[NDArray] = [None] * 3
+    base_vector_data: list[NDArray] = [None] * 3
     point_data = {}
     for i_point_data in range(point_data_input.GetNumberOfArrays()):
         name = point_data_input.GetArrayName(i_point_data)
