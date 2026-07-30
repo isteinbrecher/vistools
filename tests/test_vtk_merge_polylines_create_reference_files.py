@@ -25,22 +25,21 @@ Initially taken from pvutils (https://github.com/imcs-compsim/pvutils).
 """
 
 from pathlib import Path
-from typing import Optional, Type
 
 import numpy as np
 import pyvista as pv
 
 try:
-    from meshpy.core.material import MaterialBeam
-    from meshpy.core.mesh import Mesh
-    from meshpy.core.rotation import Rotation
-    from meshpy.four_c.element_beam import Beam3eb, Beam3rHerm2Line3
-    from meshpy.four_c.material import MaterialEulerBernoulli, MaterialReissner
-    from meshpy.mesh_creation_functions.beam_basic_geometry import (
+    from beamme.core.material import MaterialBeamBase
+    from beamme.core.mesh import Mesh
+    from beamme.core.rotation import Rotation
+    from beamme.four_c.element_beam import Beam3eb, Beam3rHerm2Line3
+    from beamme.four_c.material import MaterialEulerBernoulli, MaterialReissner
+    from beamme.mesh_creation_functions.beam_line import (
         create_beam_mesh_line,
     )
 except Exception as _:
-    MaterialBeam = None
+    MaterialBeamBase = None
     Mesh = None
     Rotation = None
     Beam3eb = None
@@ -151,12 +150,12 @@ def create_reference_file_merge_polyline() -> None:
 
 
 def polygon_mesh(
-    beam_type: Type,
-    mat: MaterialBeam,
+    beam_type: type,
+    mat: MaterialBeamBase,
     radius: float,
     segments: int,
     *,
-    n_segments: Optional[int] = None,
+    n_segments: int | None = None,
 ) -> Mesh:
     """Create a regular polygon."""
 
