@@ -418,12 +418,16 @@ def merge_polylines(
             Input grid (can only contain lines or polylines).
         output_grid:
             If this is given, the merged grid will be stores in this grid. Otherwise,
-            a new grid will be returned.
+            a new grid will be returned. This is can be useful in ParaView filters
+            where the output grid is already given.
         smooth_angle:
             Threshold for maximum angle between successive segments along a continuous
             line. The angle is calculated between the tangents of the lines which are
             always outward pointing, thus we get the angle pi if the tangents represent
             a straight polyline.
+        tol:
+            Tolerance for merging points. If two points are closer than this value,
+            they will be merged into one point.
     """
 
     # Check that all cells are lines or polylines.
