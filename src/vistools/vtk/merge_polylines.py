@@ -23,7 +23,6 @@
 curve."""
 
 from dataclasses import dataclass, field
-from typing import List, Optional
 
 import numpy as np
 import vtk
@@ -40,9 +39,9 @@ from vistools.vtk.vtk_data_structures_utils import vtk_id_to_list
 class _MergePolylineData:
     """Common data required to merge polylines."""
 
-    old_cell_tracker: List[Optional[int]]
-    partner_list: List[int]
-    partner_grouped: List[List[int]]
+    old_cell_tracker: list[int | None]
+    partner_list: list[int]
+    partner_grouped: list[list[int]]
     smooth_angle: float
 
 
@@ -56,7 +55,7 @@ class _MergePoint:
     """
 
     index_1: int
-    index_2: Optional[int] = None
+    index_2: int | None = None
 
     # ID of this point in the new grid
     point_id = None
@@ -92,8 +91,8 @@ class _PossibleCell:
 class _MergedPolyline:
     """Structure to hold a single merged polyline."""
 
-    connected_cell_points: List[_MergePoint]
-    merged_cell_ids: List[int] = field(default_factory=list)
+    connected_cell_points: list[_MergePoint]
+    merged_cell_ids: list[int] = field(default_factory=list)
 
     @property
     def last_cell_id(self):
@@ -140,7 +139,7 @@ def _smooth_angle_check(
 
 
 def _get_indices_tangent(
-    grid: vtk.vtkUnstructuredGrid, connectivity: List[int], point_id: int
+    grid: vtk.vtkUnstructuredGrid, connectivity: list[int], point_id: int
 ) -> np.ndarray:
     """Get the tangent of a polygon defined by the connectivity list.
 
@@ -173,7 +172,7 @@ def _add_next_cell(
     merge_polyline_data: _MergePolylineData,
     merged_polyline: _MergedPolyline,
     connected_point_id: int,
-) -> Optional[int]:
+) -> int | None:
     """Start at the initial point and loop over lines as long as a connectivity
     is found."""
 
@@ -201,7 +200,7 @@ def _add_next_cell(
                 possible_next_cells.append(_PossibleCell(cell_id, point_id))
 
     # Check the angle between this line and all connected cells
-    smooth_connected_cells: List[_PossibleCell] = []
+    smooth_connected_cells: list[_PossibleCell] = []
     tangent = _get_indices_tangent(
         grid,
         [merge_point.index_1 for merge_point in merged_polyline.connected_cell_points],
@@ -308,7 +307,7 @@ def _add_next_cell(
 
 def _find_next_connected_polyline(
     grid: vtk.vtkUnstructuredGrid, merge_polyline_data: _MergePolylineData
-) -> Optional[_MergedPolyline]:
+) -> _MergedPolyline | None:
     """Start with the first old cell that was not found yet. Then search all
     cells connected to that one.
 
@@ -336,7 +335,7 @@ def _find_next_connected_polyline(
 
     for start_index in [start_id, end_id]:
         merged_polyline.merged_cell_ids.append(next_cell_id)
-        next_point_id: Optional[int] = start_index
+        next_point_id: int | None = start_index
         while next_point_id is not None:
             next_point_id = _add_next_cell(
                 grid,
@@ -407,10 +406,10 @@ def _insert_point_by_index(
 def merge_polylines(
     grid: vtk.vtkUnstructuredGrid,
     *,
-    output_grid: vtk.vtkUnstructuredGrid = None,
-    smooth_angle: Optional[float] = None,
+    output_grid: vtk.vtkUnstructuredGrid | None = None,
+    smooth_angle: float | None = None,
     tol: float = 1e-8,
-) -> Optional[vtk.vtkUnstructuredGrid]:
+) -> vtk.vtkUnstructuredGrid | None:
     """Merge lines or polylines with each other that represent a continuous
     curve.
 
