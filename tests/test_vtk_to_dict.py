@@ -26,7 +26,9 @@ import pyvista
 from vistools.vtk.vtk_to_dict import vtk_to_dict
 
 
-def test_vtk_to_dict_helix_beam(get_corresponding_reference_file_path):
+def test_vtk_to_dict_helix_beam(
+    get_corresponding_reference_file_path, assert_results_close
+):
     """Test the vtk_to_dict function."""
 
     helix_beam = pyvista.get_reader(
@@ -215,10 +217,12 @@ def test_vtk_to_dict_helix_beam(get_corresponding_reference_file_path):
         "field_data": {},
     }
 
-    assert vtk_to_dict(helix_beam) == reference_dict
+    assert_results_close(reference_dict, vtk_to_dict(helix_beam))
 
 
-def test_vtk_to_dict_mixed_types(get_corresponding_reference_file_path):
+def test_vtk_to_dict_mixed_types(
+    get_corresponding_reference_file_path, assert_results_close
+):
     """Test the vtk_to_dict function."""
 
     mesh_mixed_cells = pyvista.get_reader(
@@ -342,4 +346,4 @@ def test_vtk_to_dict_mixed_types(get_corresponding_reference_file_path):
         "field_data": {},
     }
 
-    assert vtk_to_dict(mesh_mixed_cells) == reference_dict
+    assert_results_close(reference_dict, vtk_to_dict(mesh_mixed_cells))
