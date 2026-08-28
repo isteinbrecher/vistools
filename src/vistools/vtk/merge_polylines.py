@@ -32,6 +32,7 @@ from vistools.vtk.geometric_search import (
     pairs_to_partner_list,
     point_partners_to_partner_indices,
 )
+from vistools.vtk.grid_cast import GridLike, cast_output_to_input_type
 from vistools.vtk.vtk_data_structures_utils import vtk_id_to_list
 
 
@@ -404,12 +405,12 @@ def _insert_point_by_index(
 
 
 def merge_polylines(
-    grid: vtk.vtkUnstructuredGrid,
+    grid: GridLike,
     *,
     output_grid: vtk.vtkUnstructuredGrid | None = None,
     smooth_angle: float | None = None,
     tol: float = 1e-8,
-) -> vtk.vtkUnstructuredGrid | None:
+) -> GridLike | None:
     """Merge lines or polylines with each other that represent a continuous
     curve.
 
@@ -523,6 +524,6 @@ def merge_polylines(
         output_grid.InsertNextCell(cell.GetCellType(), cell.GetPointIds())
 
     if not output_grid_given:
-        return output_grid
+        return cast_output_to_input_type(grid, output_grid)
     else:
         return None

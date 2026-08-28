@@ -26,12 +26,13 @@ import vtk
 from numpy.typing import NDArray
 from vtk.util import numpy_support as vtk_numpy_support
 
+from vistools.vtk.grid_cast import GridLike, cast_output_to_input_type
 from vistools.vtk.vtk_data_structures_utils import vtk_id_to_list
 
 
 def polyline_cross_section(
-    grid: vtk.vtkUnstructuredGrid, cross_section_points, *, closed: bool = True
-) -> vtk.vtkPolyData:
+    grid: GridLike, cross_section_points, *, closed: bool = True
+) -> vtk.vtkPolyData | GridLike:
     """Extrude a profile defined by the cross section coordinates along a
     polyline.
 
@@ -184,4 +185,4 @@ def polyline_cross_section(
     for cell in new_polygons + new_quad4:
         output_grid.InsertNextCell(cell.GetCellType(), cell.GetPointIds())
 
-    return output_grid
+    return cast_output_to_input_type(grid, output_grid)

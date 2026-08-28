@@ -30,15 +30,27 @@ from vistools.vtk.merge_polylines import merge_polylines
 CLEAN_GRID_TOL = 1e-10
 
 
-@pytest.mark.parametrize("clean", [False, True])
+@pytest.mark.parametrize(
+    "clean,import_type",
+    [
+        (False, "pyvista"),
+        (True, "pyvista"),
+        (False, "vtk"),
+    ],  # `clean` is not possible with vtk import type
+)
 def test_vtk_merge_polylines(
-    clean, get_corresponding_reference_file_path, assert_grids_close
+    clean,
+    import_type,
+    load_grid,
+    get_corresponding_reference_file_path,
+    assert_grids_close,
 ):
     """Test the merge_polylines function."""
 
-    grid = pv.get_reader(
-        get_corresponding_reference_file_path(additional_identifier="raw")
-    ).read()
+    grid = load_grid(
+        get_corresponding_reference_file_path(additional_identifier="raw"),
+        import_type=import_type,
+    )
 
     identifier = None
     if clean:
@@ -52,6 +64,7 @@ def test_vtk_merge_polylines(
         get_corresponding_reference_file_path(additional_identifier=identifier),
         grid_merged,
     )
+    assert type(grid) == type(grid_merged)
 
 
 @pytest.mark.parametrize(

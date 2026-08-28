@@ -26,9 +26,11 @@ import vtk
 from scipy.spatial import KDTree
 from vtk.util.numpy_support import numpy_to_vtk, vtk_to_numpy
 
+from vistools.vtk.grid_cast import GridLike
+
 
 def add_normal_field(
-    shell: vtk.vtkUnstructuredGrid,
+    shell: GridLike,
     *,
     nonlinear_subdivision_level: int = 1,
     tolerance: float = 1e-6,

@@ -317,3 +317,25 @@ def assert_tex_close() -> Callable:
         )
 
     return _assert_tex_close
+
+
+@pytest.fixture(scope="function")
+def load_grid() -> Callable:
+    """Return a function that loads a grid from a file."""
+
+    def _load_grid(
+        path: Path | str, import_type: str = "pyvista"
+    ) -> pv.UnstructuredGrid | vtk.vtkUnstructuredGrid:
+        """Load a grid from a file."""
+
+        if import_type == "pyvista":
+            return pv.get_reader(path).read()
+        elif import_type == "vtk":
+            reader = vtk.vtkXMLUnstructuredGridReader()
+            reader.SetFileName(str(path))
+            reader.Update()
+            return reader.GetOutput()
+        else:
+            raise ValueError(f"Unknown import type: {import_type}")
+
+    return _load_grid
