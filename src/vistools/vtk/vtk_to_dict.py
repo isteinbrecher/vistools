@@ -45,7 +45,7 @@ def vtk_to_dict(grid: vtk.vtkUnstructuredGrid) -> dict:
         for i in range(attributes.GetNumberOfArrays()):
             array = attributes.GetArray(i)
             name = array.GetName()
-            result[name] = vtk_to_numpy(array).tolist()
+            result[name] = vtk_to_numpy(array)
         return result
 
     # Get the connectivity of each cell.
@@ -71,7 +71,7 @@ def vtk_to_dict(grid: vtk.vtkUnstructuredGrid) -> dict:
             faces.append(None)
 
     return_dict = {
-        "points": vtk_to_numpy(grid.GetPoints().GetData()).tolist(),
+        "points": vtk_to_numpy(grid.GetPoints().GetData()),
         "cells": cells,
         "cell_types": cell_types,
         "point_data": data_attributes_to_dict(grid.GetPointData()),
