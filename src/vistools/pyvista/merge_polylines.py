@@ -19,31 +19,37 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-"""Test the pure vtk version of merge polylines."""
+"""Merge lines or polylines and return a PyVista grid."""
 
-import vtk
+import pyvista as pv
 
-from vistools.vtk.merge_polylines import merge_polylines
+from vistools.vtk.merge_polylines import merge_polylines as vtk_merge_polylines
 
 
-def test_vtk_merge_polylines(
-    load_grid, get_corresponding_reference_file_path, assert_grids_close
-):
-    """Test the pure VTK implementation for merging polylines."""
-    grid = load_grid(
-        get_corresponding_reference_file_path(
-            reference_file_base_name="pyvista_merge_polylines",
-            additional_identifier="raw",
-        ),
-        import_type="vtk",
+def merge_polylines(
+    grid: pv.UnstructuredGrid,
+    *,
+    smooth_angle: float | None = None,
+    tol: float = 1e-8,
+) -> pv.UnstructuredGrid:
+    """Merge connected lines or polylines into continuous curves.
+
+    This is the PyVista adapter for :func:`vistools.vtk.merge_polylines`.
+
+    Args:
+        grid: Input grid containing only lines or polylines.
+        smooth_angle: Threshold for the maximum angle between successive
+            segments. See the VTK implementation for details.
+        tol: Maximum distance between points that should be merged.
+
+    Returns:
+        The merged grid as a PyVista unstructured grid.
+    """
+    output_grid = vtk_merge_polylines(
+        grid,
+        smooth_angle=smooth_angle,
+        tol=tol,
     )
-
-    merged_grid = merge_polylines(grid)
-
-    assert isinstance(merged_grid, vtk.vtkUnstructuredGrid)
-    assert_grids_close(
-        get_corresponding_reference_file_path(
-            reference_file_base_name="pyvista_merge_polylines"
-        ),
-        merged_grid,
-    )
+    if output_grid is None:
+        raise RuntimeError("The VTK merge did not return an output grid")
+    return pv.wrap(output_grid)

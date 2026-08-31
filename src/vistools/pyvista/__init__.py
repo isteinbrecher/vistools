@@ -20,5 +20,3 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """Define the main namespace of pvtools."""
-
-from vistools.pyvista.sort_grid import sort_grid
