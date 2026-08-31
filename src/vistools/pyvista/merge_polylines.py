@@ -19,4 +19,37 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-"""Define the main namespace of pvtools."""
+"""Merge lines or polylines and return a PyVista grid."""
+
+import pyvista as pv
+
+from vistools.vtk.merge_polylines import merge_polylines as vtk_merge_polylines
+
+
+def merge_polylines(
+    grid: pv.UnstructuredGrid,
+    *,
+    smooth_angle: float | None = None,
+    tol: float = 1e-8,
+) -> pv.UnstructuredGrid:
+    """Merge connected lines or polylines into continuous curves.
+
+    This is the PyVista adapter for :func:`vistools.vtk.merge_polylines`.
+
+    Args:
+        grid: Input grid containing only lines or polylines.
+        smooth_angle: Threshold for the maximum angle between successive
+            segments. See the VTK implementation for details.
+        tol: Maximum distance between points that should be merged.
+
+    Returns:
+        The merged grid as a PyVista unstructured grid.
+    """
+    output_grid = vtk_merge_polylines(
+        grid,
+        smooth_angle=smooth_angle,
+        tol=tol,
+    )
+    if output_grid is None:
+        raise RuntimeError("The VTK merge did not return an output grid")
+    return pv.wrap(output_grid)
