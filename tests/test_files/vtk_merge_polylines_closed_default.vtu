@@ -3,6 +3,28 @@
   <UnstructuredGrid>
     <Piece NumberOfPoints="14" NumberOfCells="3">
       <PointData>
+        <DataArray type="Int64" Name="point_type" format="ascii" RangeMin="2" RangeMax="2">
+          2 2 2 2 2 2
+          2 2 2 2 2 2
+          2 2
+        </DataArray>
+        <DataArray type="Float64" Name="rotation_vector" NumberOfComponents="3" format="ascii" RangeMin="1.1380245746903372" RangeMax="4.556822651510693">
+          -0.9983944281030939 -0.38620493169547887 -0.3862049316954791 0.8243356818458096 1.6490829415641397 1.6490829415641401
+          0.30240505717557253 2.041427800567391 2.041427800567391 -0.40105716474619146 2.34504776794513 2.3450477679451303
+          -1.314728547752137 2.4918878062268157 2.491887806226816 -2.4339964357792754 2.3621415800530965 2.3621415800530974
+          -3.6178558496374027 1.7861098765880605 1.7861098765880608 -4.453725287056418 0.6815290693562414 0.6815290693562415
+          -4.453725287056418 -0.6815290693562397 -0.6815290693562398 -3.617855849637404 -1.7861098765880592 -1.7861098765880596
+          1.2091995761561452 1.2091995761561452 1.2091995761561452 1.2091995761561452 1.2091995761561452 1.2091995761561452
+          0 3.141592653589793 0 0 3.141592653589793 0
+          <InformationKey name="L2_NORM_RANGE" location="vtkDataArray" length="2">
+            <Value index="0">
+              1.1380245747
+            </Value>
+            <Value index="1">
+              4.5568226515
+            </Value>
+          </InformationKey>
+        </DataArray>
         <DataArray type="Float64" Name="node_value" format="ascii" RangeMin="1" RangeMax="1">
           1 1 1 1 1 1
           1 1 1 1 1 1
@@ -61,6 +83,15 @@
         </DataArray>
       </PointData>
       <CellData>
+        <DataArray type="Float64" Name="element_type_id" format="ascii" RangeMin="0" RangeMax="0">
+          0 0 0
+        </DataArray>
+        <DataArray type="Float64" Name="beamme_id" format="ascii" RangeMin="4.090909090909091" RangeMax="11">
+          4.090909090909091 10 11
+        </DataArray>
+        <DataArray type="Float64" Name="beamme_type" format="ascii" RangeMin="1" RangeMax="1">
+          1 1 1
+        </DataArray>
         <DataArray type="Float64" Name="cross_section_radius" format="ascii" RangeMin="0.1" RangeMax="0.1">
           0.1 0.1 0.1
         </DataArray>
@@ -81,7 +112,7 @@
         </DataArray>
       </CellData>
       <Points>
-        <DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii" RangeMin="1.9999999999999973" RangeMax="4">
+        <DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii" RangeMin="1.9999999999999971" RangeMax="4">
           1.9999999999999984 -3.885780586188048e-16 0 1.618033988749895 1.1755705045849463 0
           0.6180339887498949 1.9021130325903068 0 -0.6180339887498945 1.9021130325903064 0
           -1.6180339887498938 1.1755705045849458 0 -1.9999999999999987 3.3306690738754696e-16 0

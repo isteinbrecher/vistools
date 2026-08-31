@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools_scm[toml]"]
 build-backend = "setuptools.build_meta"
 
 [project]
-requires-python = ">= 3.10"
+requires-python = ">= 3.11"
 name = "vistools"
 authors = [
     {name = "Ivo Steinbrecher", email = "ivo.steinbrecher@unibw.de"},
@@ -32,6 +32,7 @@ pyvista = [
   "pyvista"
 ]
 dev = [
+  "beamme>=0.3.0",
   "fourcipp",
   "pre-commit",
   "pytest",
