@@ -66,7 +66,7 @@ def get_grid_for_testing(mesh: Mesh) -> pv.UnstructuredGrid:
     return grid
 
 
-def test_vtk_merge_polylines_create_reference_files(
+def test_pyvista_merge_polylines_create_reference_files(
     get_corresponding_reference_file_path, assert_grids_close
 ) -> None:
     """Create different test meshes for the merge polyline filter."""
@@ -163,7 +163,7 @@ def test_vtk_merge_polylines_create_reference_files(
 
     assert_grids_close(
         get_corresponding_reference_file_path(
-            reference_file_base_name="vtk_merge_polylines_raw"
+            reference_file_base_name="pyvista_merge_polylines_raw"
         ),
         get_grid_for_testing(mesh),
     )
@@ -202,7 +202,7 @@ def polygon_mesh(
     return mesh
 
 
-def test_vtk_merge_polylines_create_reference_files_closed(
+def test_pyvista_merge_polylines_create_reference_files_closed(
     get_corresponding_reference_file_path, assert_grids_close
 ):
     """Create a closed polygon circle test case for the merge polyline
@@ -221,7 +221,7 @@ def test_vtk_merge_polylines_create_reference_files_closed(
 
     assert_grids_close(
         get_corresponding_reference_file_path(
-            reference_file_base_name="vtk_merge_polylines_closed_raw"
+            reference_file_base_name="pyvista_merge_polylines_closed_raw"
         ),
         get_grid_for_testing(mesh),
     )

@@ -19,19 +19,24 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-"""Test the functionality of merge_polylines."""
+"""Test the functionality of merge_polylines.
+
+This actually fully tests the underlying vtk functionality. By doing
+this here, we can ensure that the full functionality also works for the
+wrapper.
+"""
 
 import numpy as np
 import pytest
 import pyvista as pv
 
-from vistools.vtk.merge_polylines import merge_polylines
+from vistools.pyvista.merge_polylines import merge_polylines
 
 CLEAN_GRID_TOL = 1e-10
 
 
 @pytest.mark.parametrize("clean", [False, True])
-def test_vtk_merge_polylines(
+def test_pyvista_merge_polylines(
     clean, get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the merge_polylines function."""
@@ -48,6 +53,7 @@ def test_vtk_merge_polylines(
 
     grid_merged = merge_polylines(grid)
 
+    assert isinstance(grid_merged, pv.UnstructuredGrid)
     assert_grids_close(
         get_corresponding_reference_file_path(additional_identifier=identifier),
         grid_merged,
@@ -59,7 +65,7 @@ def test_vtk_merge_polylines(
     [[None, "default"], [0.5 * np.pi, "large_angle"]],
 )
 @pytest.mark.parametrize("clean", [False, True])
-def test_vtk_merge_polylines_closed(
+def test_pyvista_merge_polylines_closed(
     smooth_angle,
     smooth_angle_name,
     clean,
@@ -81,6 +87,7 @@ def test_vtk_merge_polylines_closed(
 
     grid_merged = merge_polylines(grid, smooth_angle=smooth_angle)
 
+    assert isinstance(grid_merged, pv.UnstructuredGrid)
     assert_grids_close(
         get_corresponding_reference_file_path(
             additional_identifier="_".join(identifier)
