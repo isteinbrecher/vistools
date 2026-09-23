@@ -32,7 +32,6 @@ def test_pyvista_extrude_shell_surface(
     assert_grids_close_single_precision_tol,
 ):
     """Test the extrude_shell_surface function."""
-
     shell = pyvista.get_reader(
         get_corresponding_reference_file_path(reference_file_base_name="shell")
     ).read()

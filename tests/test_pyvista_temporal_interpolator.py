@@ -32,7 +32,6 @@ def test_pyvista_temporal_interpolator(
     get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the temporal_interpolator function."""
-
     # Get the pvd reader
     pvd_path = os.path.join(get_corresponding_reference_file_path(extension="pvd"))
     pvd_reader = pv.get_reader(pvd_path)

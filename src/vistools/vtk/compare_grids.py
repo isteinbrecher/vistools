@@ -29,7 +29,6 @@ from vtk.util import numpy_support as vtk_numpy_support
 def _vtk_array_to_info(array: vtk.vtkDataArray | vtk.vtkPoints) -> dict:
     """Convert a vtk array to a dictionary with relevant information for
     comparison."""
-
     if isinstance(array, vtk.vtkPoints):
         array = array.GetData()
     elif isinstance(array, vtk.vtkDataArray):
@@ -66,7 +65,6 @@ def compare_grids(
         equal is returned. If output is True, a tuple of the boolean value and a
         list of strings with the results of the comparison is returned.
     """
-
     if rtol is None:
         rtol = 1e-8
     if atol is None:
@@ -74,7 +72,6 @@ def compare_grids(
 
     def compare_arrays(array_1, array_2, name):
         """Compare two arrays."""
-
         if array_1 is None and array_2 is None:
             return True, f"{name}: OK (empty)"
         elif array_1 is None or array_2 is None:
@@ -189,7 +186,6 @@ def compare_grids(
 
     def compare_data_fields(data_1, data_2, name):
         """Compare multiple data sets grouped together."""
-
         names_1, names_2 = [
             set([data.GetArrayName(i) for i in range(data.GetNumberOfArrays())])
             for data in [data_1, data_2]

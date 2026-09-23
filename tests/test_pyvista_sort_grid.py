@@ -21,8 +21,6 @@
 # THE SOFTWARE.
 """Test the functionality of sort_grid."""
 
-import os
-
 import numpy as np
 import pyvista
 
@@ -39,7 +37,6 @@ def test_pyvista_sort_grid_complete(
     grid, i.e., we sort all points such that their ordering is
     completely defined by the sorting keys
     """
-
     mesh_serial, mesh_parallel = [
         pyvista.get_reader(
             get_corresponding_reference_file_path(reference_file_base_name=name)
@@ -101,7 +98,6 @@ def test_pyvista_sort_grid_partial(
     additionally tests that when sorting data where multiple entries
     have the same value, the ordering within these entries is preserved.
     """
-
     mesh_serial, mesh_parallel = [
         pyvista.get_reader(
             get_corresponding_reference_file_path(reference_file_base_name=name)
@@ -128,7 +124,6 @@ def test_pyvista_sort_grid_mixed_types(
     get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test that the sort grid function can handle polyhedrons."""
-
     mesh_mixed_cells = pyvista.get_reader(
         get_corresponding_reference_file_path(
             reference_file_base_name="mixed_cell_types"

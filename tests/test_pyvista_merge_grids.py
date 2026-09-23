@@ -66,7 +66,6 @@ def test_pyvista_merge_grids_union_field_names():
 )
 def test_pyvista_merge_grids_field_meta(data_value, tail_shape_ref):
     """Test that the field meta is correctly computed."""
-
     # Only the first grid has the data
     g1 = create_line_grid()
     g2 = create_line_grid()
@@ -96,7 +95,6 @@ def test_pyvista_merge_grids_field_meta(data_value, tail_shape_ref):
 def test_pyvista_merge_grids_ensure_field(assert_results_close):
     """Test that _ensure_field correctly adds missing fields and validates
     existing ones."""
-
     # Check that a missing scalar field is added with the correct shape and value
     g = create_line_grid()
     _ensure_field(
@@ -142,7 +140,6 @@ def test_pyvista_merge_grids_ensure_field(assert_results_close):
 def test_pyvista_merge_grids_ensure_field_patch_data_arrays(assert_results_close):
     """Test that _patch_data_arrays correctly ensures both grids have the same
     fields with appropriate fill values."""
-
     g1 = create_line_grid()
     g2 = create_line_grid()
 
@@ -288,7 +285,6 @@ def test_pyvista_merge_grids_mixed_cell_types(
     """Test that merge_grids correctly merges two unstructured grids with mixed
     cell types and point data, preserving all points and fields, and applying
     fill values as needed."""
-
     mixed_grid = pv.get_reader(
         get_corresponding_reference_file_path(
             reference_file_base_name="mixed_cell_types"

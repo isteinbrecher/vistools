@@ -44,7 +44,6 @@ def extrude_shell_surface(
             If this is `None`, the grid has to already contain the surface normals
             field `surface_normals`.
     """
-
     id_set = set(shell.celltypes)
     if not len(id_set) == 1 or not id_set.pop() == 28:
         raise ValueError("Extrude shell is only implemented for quad9")

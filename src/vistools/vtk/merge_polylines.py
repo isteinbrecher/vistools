@@ -82,7 +82,6 @@ class _PossibleCell:
         Returns:
             Tangent at the given point.
         """
-
         cell_point_ids = vtk_id_to_list(grid.GetCell(self.cell_id).GetPointIds())
         self.tangent = _get_indices_tangent(grid, cell_point_ids, self.point_id)
 
@@ -106,7 +105,6 @@ class _MergedPolyline:
         If so, we set the start and end point to be equal to each other,
         so they can the same point in the created grid.
         """
-
         if (
             self.connected_cell_points[0].index_1
             == self.connected_cell_points[-1].index_1
@@ -152,7 +150,6 @@ def _get_indices_tangent(
     Returns:
         Tangent at the given point.
     """
-
     if connectivity[-1] == point_id:
         tangent_point_indices = [-2, -1]
     elif connectivity[0] == point_id:
@@ -175,7 +172,6 @@ def _add_next_cell(
 ) -> int | None:
     """Start at the initial point and loop over lines as long as a connectivity
     is found."""
-
     # Get all possible cells that are next in line.
     # First get the ones that are connected to the current cell via the connectivity entries.
     id_list = vtk.vtkIdList()
@@ -308,13 +304,12 @@ def _add_next_cell(
 def _find_next_connected_polyline(
     grid: vtk.vtkUnstructuredGrid, merge_polyline_data: _MergePolylineData
 ) -> _MergedPolyline | None:
-    """Start with the first old cell that was not found yet. Then search all
-    cells connected to that one.
+    """Find the next connected polyline.
 
-    Return all point ids that make up the new poly line. Return None if
-    all cells have been found.
+    Start with the first old cell that was not found yet. Then search
+    all cells connected to that one. Return all point ids that make up
+    the new poly line. Return None if all cells have been found.
     """
-
     # Take the next available cell and look for all connected cells
     for i in merge_polyline_data.old_cell_tracker:
         if i is not None:
@@ -363,7 +358,6 @@ def _insert_point_by_index(
     Returns:
         int: The index of the newly inserted point in the target grid.
     """
-
     if merge_point.point_id is not None:
         return merge_point.point_id
 
@@ -425,7 +419,6 @@ def merge_polylines(
             always outward pointing, thus we get the angle pi if the tangents represent
             a straight polyline.
     """
-
     # Check that all cells are lines or polylines.
     n_cells = grid.GetNumberOfCells()
     for i in range(n_cells):

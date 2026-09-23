@@ -33,7 +33,6 @@ def test_vtk_polyline_cross_section(
     get_corresponding_reference_file_path, assert_grids_close, closed
 ):
     """Test the polyline_cross_section function."""
-
     grid = pyvista.get_reader(
         get_corresponding_reference_file_path(reference_file_base_name="helix_beam")
     ).read()

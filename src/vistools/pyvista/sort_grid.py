@@ -50,7 +50,6 @@ def sort_grid(
         Also process the input sorting key variable for different kinds
         of input
         """
-
         if sorting_keys is None:
             return False, None, None
         else:

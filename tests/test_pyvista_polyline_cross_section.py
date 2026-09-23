@@ -39,7 +39,6 @@ def test_pyvista_polyline_cross_section(
     separate_surfaces,
 ):
     """Test the polyline_cross_section function."""
-
     # Load the helix centerline
     grid = pyvista.get_reader(
         get_corresponding_reference_file_path(reference_file_base_name="helix_beam")
