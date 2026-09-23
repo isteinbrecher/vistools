@@ -31,7 +31,6 @@ def test_pyvista_scalar_bar_to_tikz(
     get_corresponding_reference_file_path, tmp_path, assert_tex_close
 ):
     """Test the scalar bar to TikZ functionality."""
-
     # Load an example mesh with scalar data
     mesh = examples.load_random_hills()
 

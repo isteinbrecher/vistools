@@ -21,6 +21,8 @@
 # THE SOFTWARE.
 """Utility functions for vtk data structures."""
 
+# Comment to satisfy docformatter
+
 
 def vtk_id_to_list(vtk_id_list):
     """Convert a vtk id list to a python list."""

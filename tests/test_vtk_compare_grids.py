@@ -41,7 +41,6 @@ def get_test_grid_data() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         - 1 tetra
         - 1 polyhedron (cube)
     """
-
     # Points
     points = np.array(
         [
@@ -123,7 +122,6 @@ def get_test_grid_data() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 def get_test_grid() -> pv.UnstructuredGrid:
     """Create the test grid."""
-
     cells, cell_types, points = get_test_grid_data()
     grid = pv.UnstructuredGrid(cells, cell_types, points)
     return grid
@@ -168,7 +166,6 @@ def test_vtk_compare_grids_cell_types_mismatch():
 
 def test_vtk_compare_grids_cell_connectivity_mismatch():
     """Test that a mismatch in cell connectivity is detected."""
-
     grid_1 = get_test_grid()
     grid_2_cells_original, grid_2_cell_types, grid_2_points = get_test_grid_data()
 

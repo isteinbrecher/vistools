@@ -30,7 +30,6 @@ def test_vtk_to_dict_helix_beam(
     get_corresponding_reference_file_path, assert_results_close
 ):
     """Test the vtk_to_dict function."""
-
     helix_beam = pyvista.get_reader(
         get_corresponding_reference_file_path(reference_file_base_name="helix_beam")
     ).read()
@@ -224,7 +223,6 @@ def test_vtk_to_dict_mixed_types(
     get_corresponding_reference_file_path, assert_results_close
 ):
     """Test the vtk_to_dict function."""
-
     mesh_mixed_cells = pyvista.get_reader(
         get_corresponding_reference_file_path(
             reference_file_base_name="mixed_cell_types"

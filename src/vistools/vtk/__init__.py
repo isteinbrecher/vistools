@@ -20,7 +20,3 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """Define the main namespace of vistools.vtk."""
-
-from vistools.vtk.compare_grids import compare_grids
-from vistools.vtk.merge_polylines import merge_polylines
-from vistools.vtk.polyline_cross_section import polyline_cross_section

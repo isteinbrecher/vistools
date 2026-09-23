@@ -43,7 +43,6 @@ def test_file_directory() -> Path:
     Returns:
         Path: A Path object representing the full path to the test file directory.
     """
-
     testing_path = Path(__file__).resolve().parent
     return testing_path / "test_files"
 
@@ -58,7 +57,6 @@ def current_test_name(request: pytest.FixtureRequest) -> str:
     Returns:
         str: The name of the current pytest test.
     """
-
     return request.node.originalname
 
 
@@ -72,7 +70,6 @@ def current_test_name_no_prefix(current_test_name) -> str:
     Returns:
         str: The name of the current pytest test without the leading "test_".
     """
-
     split = current_test_name.split("test_")
     if len(split) > 2:
         raise ValueError("Split is not unique")
@@ -94,8 +91,9 @@ def get_corresponding_reference_file_path(
         additional_identifier: str | None = None,
         extension: str = "vtu",
     ) -> Path:
-        """Get path to corresponding reference file for each test. Also check
-        if this file exists. Basename, additional identifier and extension can
+        """Get path to corresponding reference file for each test.
+
+        Also check if this file exists. Basename, additional identifier and extension can
         be adjusted.
 
         Args:
@@ -107,7 +105,6 @@ def get_corresponding_reference_file_path(
         Returns:
             Path to reference file.
         """
-
         corresponding_reference_file = (
             reference_file_base_name or current_test_name_no_prefix
         )
@@ -209,7 +206,6 @@ def custom_fourcipp_comparison(
         True if the objects are equal, otherwise raises an AssertionError.
         If no comparison took place, None is returned.
     """
-
     if isinstance(obj, (np.ndarray, np.generic)) or isinstance(
         reference_obj, (np.ndarray, np.generic)
     ):
@@ -240,7 +236,6 @@ def assert_results_close() -> Callable:
             rtol: The relative tolerance.
             atol: The absolute tolerance.
         """
-
         compare_nested_dicts_or_lists(
             reference,
             result,
@@ -259,22 +254,18 @@ def assert_results_close() -> Callable:
 def assert_tex_close() -> Callable:
     """Return a function that asserts that given LaTeX texts are the same, also
     compare floating point values with a tolerance."""
-
     regex_float = re.compile(
-        r"""
-        [-+]?(
-            (?:\d+\.\d*)|      # 1.23 or 1.
-            (?:\.\d+)|         # .123
-            (?:\d+\.\d*[eE][-+]?\d+)|  # 1.23e4
-            (?:\d+[eE][-+]?\d+)        # 1e4
-        )
-        """,
-        re.VERBOSE,
+        r"[-+]?"  # Optional sign
+        r"("
+        r"\d+\.\d*"  # 1.23 or 1.
+        r"|\.\d+"  # .123
+        r"|\d+\.\d*[eE][-+]?\d+"  # 1.23e4
+        r"|\d+[eE][-+]?\d+"  # 1e4
+        r")"
     )
 
     def split_tex_text(text: str) -> tuple[list[str], np.ndarray]:
         """Split the given LaTeX text into text and floating points values."""
-
         parts = []
         floats = []
 
@@ -291,7 +282,6 @@ def assert_tex_close() -> Callable:
     def _assert_tex_close(reference, result, rtol: float = 1e-10, atol: float = 1e-10):
         """Assert that the given LaTeX texts are the same, also compare
         floating point values with a tolerance."""
-
         text_ref, float_ref = split_tex_text(reference)
         text_result, float_result = split_tex_text(result)
 
@@ -327,7 +317,6 @@ def load_grid() -> Callable:
         path: Path | str, import_type: str = "pyvista"
     ) -> pv.UnstructuredGrid | vtk.vtkUnstructuredGrid:
         """Load a grid from a file."""
-
         if import_type == "pyvista":
             return pv.get_reader(path).read()
         elif import_type == "vtk":

@@ -56,7 +56,6 @@ def _get_scalar_bar_rectangles(plotter, scalar_bars, dpi):
     and the height:
         [pos_x, pos_y, width, height]
     """
-
     rectangles = []
 
     for scalar_bar in scalar_bars:
@@ -69,7 +68,6 @@ def _get_scalar_bar_rectangles(plotter, scalar_bars, dpi):
 
 def _get_tikz_data(scalar_bar):
     """Return the data required for TikZ for this scalar bar."""
-
     data = {}
 
     min_max = list(scalar_bar.GetLookupTable().GetRange())
@@ -89,7 +87,6 @@ def _get_tikz_data(scalar_bar):
 
 def _get_tikz_string_continuous(rectangle, data, number_format):
     """Get the TikZ code for a continuous color bar."""
-
     # Add the code that is valid for all types of labels.
     tikz_code = [
         "\\begin{axis}[",
@@ -156,7 +153,6 @@ def export_to_tikz(
         figure_path: Relative path to figures in the TeX document structure. Default is empty.
         number_format: Number format to be used for the TeX ticks.
     """
-
     # Name of image and TikZ file.
     path_to_name = Path(name_or_path)
     base_dir = path_to_name.parent

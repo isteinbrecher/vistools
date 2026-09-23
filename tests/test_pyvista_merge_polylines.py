@@ -40,7 +40,6 @@ def test_pyvista_merge_polylines(
     clean, get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the merge_polylines function."""
-
     grid = pv.get_reader(
         get_corresponding_reference_file_path(additional_identifier="raw")
     ).read()
@@ -73,7 +72,6 @@ def test_pyvista_merge_polylines_closed(
     assert_grids_close,
 ):
     """Test the merge_polylines function for a closed polygon."""
-
     identifier = [smooth_angle_name]
 
     grid = pv.get_reader(

@@ -44,7 +44,6 @@ def polyline_cross_section(
     closed:
         Flag if the profile is open or closed
     """
-
     # Get information about input grid
     n_cells = grid.GetNumberOfCells()
 
@@ -88,7 +87,6 @@ def polyline_cross_section(
 
     def extrude_cross_section_polyline(polyline: vtk.vtkPolyLine):
         """Extrude the cross section along the given polyline."""
-
         i_start = new_point_coordinates.GetNumberOfPoints()
 
         point_ids = vtk_id_to_list(polyline.GetPointIds())

@@ -53,7 +53,6 @@ def setup_plotter():
 
 def test_set_camera_settings_applies_correctly():
     """Check that set_camera_settings applies the correct settings."""
-
     plotter = setup_plotter()
 
     # Apply the mock settings.
@@ -73,7 +72,6 @@ def test_set_camera_settings_applies_correctly():
 
 def test_get_camera_settings_returns_expected_keys():
     """Check that get_camera_settings returns the correct dictionary."""
-
     plotter = setup_plotter()
     plotter.show(auto_close=False)  # prepare the plotter but don't block
 

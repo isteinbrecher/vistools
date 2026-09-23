@@ -22,6 +22,8 @@
 """Geometric search functionality, copied from MeshPy
 (https://github.com/imcs-compsim/meshpy)."""
 
+# Comment to satisfy docformatter
+
 
 def point_partners_to_partner_indices(point_partners, n_partners):
     """Convert the partner indices for each point to a list of lists with the
@@ -35,7 +37,6 @@ def point_partners_to_partner_indices(point_partners, n_partners):
 
 def pairs_to_partner_list(pairs, n_points):
     """Convert the pairs to a partner list."""
-
     # Sort the pairs by the first column
     pairs = pairs[pairs[:, 0].argsort()]
 

@@ -58,7 +58,6 @@ def polyline_cross_section(
         to the bounding surfaces. This can be useful if sharp edges should be shown in
         the visualization.
     """
-
     cross_section_grid = pv.UnstructuredGrid(
         vtk_polyline_cross_section(grid, cross_section_points, closed=closed)
     )

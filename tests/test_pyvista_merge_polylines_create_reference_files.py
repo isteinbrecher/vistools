@@ -70,7 +70,6 @@ def test_pyvista_merge_polylines_create_reference_files(
     get_corresponding_reference_file_path, assert_grids_close
 ) -> None:
     """Create different test meshes for the merge polyline filter."""
-
     mesh = Mesh()
     mat = MaterialBeamBase(radius=0.1)
 
@@ -178,7 +177,6 @@ def polygon_mesh(
     n_segments: int | None = None,
 ) -> Mesh:
     """Create a regular polygon."""
-
     mesh = Mesh()
 
     delta_phi = 2.0 * np.pi / segments
@@ -207,7 +205,6 @@ def test_pyvista_merge_polylines_create_reference_files_closed(
 ):
     """Create a closed polygon circle test case for the merge polyline
     filter."""
-
     radius = 2.0
     mat = MaterialBeamBase(radius=0.1)
     mesh = polygon_mesh(Beam2, mat, radius, 10)

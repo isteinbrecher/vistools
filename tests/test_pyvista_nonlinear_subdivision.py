@@ -33,7 +33,6 @@ def test_pyvista_generate_nonlinear_subdivision_hex27(
     assert_grids_close_single_precision_tol,
 ):
     """Test the generate_nonlinear_subdivision function."""
-
     shell = pyvista.get_reader(
         get_corresponding_reference_file_path(reference_file_base_name="shell")
     ).read()
@@ -63,7 +62,6 @@ def test_pyvista_generate_nonlinear_subdivision_quad9(
     get_corresponding_reference_file_path, assert_grids_close
 ):
     """Test the generate_nonlinear_subdivision function."""
-
     shell = pyvista.get_reader(
         get_corresponding_reference_file_path(reference_file_base_name="shell")
     ).read()
