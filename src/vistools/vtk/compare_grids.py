@@ -106,13 +106,13 @@ def compare_grids(
         # for the comparison, e.g., because they are used interchangeably in different
         # versions of VTK or PyVista.
         equivalent_types = [
-            {12, 16},  # Unsigned integer and vtk_id_type
+            {vtk.VTK_LONG, vtk.VTK_LONG_LONG, vtk.VTK_ID_TYPE},
         ]
         t_1 = array_1_info["data_type"]
         t_2 = array_2_info["data_type"]
         if t_1 == t_2:
             pass
-        elif {t_1, t_2} in equivalent_types:
+        elif any({t_1, t_2} <= equivalent for equivalent in equivalent_types):
             pass
         else:
             return (
